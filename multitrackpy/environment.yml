@@ -1,0 +1,16 @@
+name: multitrackpy
+channels:
+  - open3d-admin
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.6
+  - numpy
+  - tqdm
+  - construct
+  - h5py
+  - imageio
+  - scikit-image
+  - scipy
+  - pip:
+    - bbo_ccvtools
