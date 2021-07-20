@@ -70,7 +70,7 @@ def track_frames_mp(gopts):
     space_coords = mtt.read_spacecoords(gopts['mtt_file'])
     calib = mtt.read_calib(gopts['mtt_file'])
     videos = mtt.read_video_paths(gopts['video_dir'],gopts['mtt_file']) 
-    print(f'Useing {len(videos)} tracking cams')
+    print(f'Using {len(videos)} tracking cams')
     
     preloaddict = {
         'space_coords': space_coords,

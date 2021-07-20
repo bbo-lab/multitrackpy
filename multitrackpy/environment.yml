@@ -12,5 +12,6 @@ dependencies:
   - imageio
   - scikit-image
   - scipy
+  - pip
   - pip:
     - bbo_ccvtools
