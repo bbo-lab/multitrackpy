@@ -14,4 +14,4 @@ dependencies:
   - scipy
   - pip
   - pip:
-    - bbo_ccvtools
+    - bbo-ccvtools
