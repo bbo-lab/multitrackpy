@@ -4,6 +4,7 @@ from ccvtools import rawio
 from multiprocessing import Pool
 from itertools import starmap
 from functools import partial
+import time
 
 from multitrackpy import mtt
 from multitrackpy import image
@@ -53,20 +54,26 @@ def track_frames_sp(gopts,
     
     # Iterate frames for processing
     for (i,fr) in enumerate(frame_idxs):
+        print(f'{fr} {time.time()} fetch data')
         frames = np.array([ image.get_processed_frame(np.double(readers[iC].get_data(fr))) for iC in range(len(videos)) ])
+        print(f'{fr} {time.time()} compute minima')
         minima = [ np.flip(image.get_minima(frames[iC],gopts['led_thres']),axis=1) for iC in range(len(videos)) ] # minima return mat idxs, camera expects xy
         
+        print(f'{fr} {time.time()} triangulate')
         points = camera.triangulate_points_nocorr(minima,offsets,calib,gopts['linedist_thres'])
         
         fr_out[i] = fr
         
+        print(f'{fr} {time.time()} find trafo')
         if len(points)>0:
             R[i], t[i], errors[i] = geometry.find_trafo_nocorr(space_coords,points,gopts['corr_thres'])
+        print(f'{fr} {time.time()} done')
 
     return (R,t,errors,fr_out)
 
 
 def track_frames_mp(gopts):
+    print('Tracking started {time.time()}')
     space_coords = mtt.read_spacecoords(gopts['mtt_file'])
     calib = mtt.read_calib(gopts['mtt_file'])
     videos = mtt.read_video_paths(gopts['video_dir'],gopts['mtt_file']) 
@@ -86,7 +93,8 @@ def track_frames_mp(gopts):
     
     slice_list = list(helper.make_slices(len(frame_idxs),gopts['n_cpu']))
     arg_list = [ helper.dict_copyreplace(gopts,{'frame_idxs': frame_idxs[slice[0]:slice[1]]}) for slice in slice_list]
-    
+   
+    print(f'Using {gopts["n_cpu"]} workers') 
     with Pool(gopts['n_cpu']) as p:
         pres_list = p.map(partial(track_frames_sp,**preloaddict), arg_list)
     

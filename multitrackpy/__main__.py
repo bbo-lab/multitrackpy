@@ -2,11 +2,13 @@ import sys
 from scipy.io import savemat
 import numpy as np
 import argparse
+import time
 
 from multitrackpy import mtt
 from multitrackpy import tracking
 
 def main():
+    print(f'Program started {time.time()}')
     # Get default job options
     gopts = tracking.get_default_globalopts()
 
