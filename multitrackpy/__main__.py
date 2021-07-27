@@ -4,8 +4,8 @@ import numpy as np
 import argparse
 import time
 
-from multitrackpy import mtt
-from multitrackpy import tracking
+from . import mtt
+from . import tracking
 
 def main():
     print(f'Program started {time.time()}')

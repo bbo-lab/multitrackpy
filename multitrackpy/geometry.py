@@ -1,6 +1,6 @@
 import numpy as np
 import scipy
-from multitrackpy.rigid_body_transform_3d import rigid_transform_3D
+from .rigid_body_transform_3d import rigid_transform_3D
 
 def get_line_dist(r1,e1,r2,e2):
     n = np.cross(e1,e2)

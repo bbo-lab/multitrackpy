@@ -1,8 +1,8 @@
 import numpy as np
 import scipy
 
-from multitrackpy import camera
-from multitrackpy import geometry
+from . import camera
+from . import geometry
 
 def model3(abi,k):
     s = np.sqrt(np.sum(abi**2,axis=0))

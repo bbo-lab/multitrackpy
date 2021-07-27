@@ -7,11 +7,10 @@ dependencies:
   - python=3.6
   - numpy
   - tqdm
-  - construct
   - h5py
   - imageio
   - scikit-image
-  - scipy
   - pip
   - pip:
     - bbo-ccvtools
+    - construct
