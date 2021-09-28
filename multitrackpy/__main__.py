@@ -3,12 +3,15 @@ from scipy.io import savemat
 import numpy as np
 import argparse
 import time
+from datetime import datetime
 
 from multitrackpy import mtt
 from multitrackpy import tracking
 
 def main():
+    print(datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
     print(f'Program started {time.time()}')
+    time.sleep(10)
     # Get default job options
     gopts = tracking.get_default_globalopts()
 
@@ -30,6 +33,7 @@ def main():
     if args.END_IDX==-1:
         args.END_IDX = mtt.read_frame_n(gopts['mtt_file'])
     gopts['frame_idxs'] = range(args.START_IDX,args.END_IDX)
+
 
     # Detect frames
     (R,t,errors,fr_out) = tracking.track_frames(gopts)

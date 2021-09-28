@@ -14,9 +14,12 @@ from multitrackpy import helper
 
 
 def track_frames(gopts):
+    print('Running deciding mode')
     if gopts['n_cpu']>1:
+        print('Running in MP mode')
         return track_frames_mp(gopts)
     else:
+        print('Running in SP mode')
         return track_frames_sp(gopts)
 
 def track_frames_sp(gopts,
@@ -73,7 +76,8 @@ def track_frames_sp(gopts,
 
 
 def track_frames_mp(gopts):
-    print('Tracking started {time.time()}')
+    print('Running in MP mode 2')
+    print(f'Tracking started {time.time()}')
     space_coords = mtt.read_spacecoords(gopts['mtt_file'])
     calib = mtt.read_calib(gopts['mtt_file'])
     videos = mtt.read_video_paths(gopts['video_dir'],gopts['mtt_file']) 
