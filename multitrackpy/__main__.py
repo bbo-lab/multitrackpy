@@ -5,8 +5,8 @@ import argparse
 import time
 from datetime import datetime
 
-from multitrackpy import mtt
-from multitrackpy import tracking
+from . import mtt
+from . import tracking
 
 def main():
     print(datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))

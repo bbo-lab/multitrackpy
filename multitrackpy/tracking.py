@@ -6,11 +6,11 @@ from itertools import starmap
 from functools import partial
 import time
 
-from multitrackpy import mtt
-from multitrackpy import image
-from multitrackpy import geometry
-from multitrackpy import camera
-from multitrackpy import helper
+from . import mtt
+from . import image
+from . import geometry
+from . import camera
+from . import helper
 
 
 def track_frames(gopts):
@@ -57,27 +57,26 @@ def track_frames_sp(gopts,
     
     # Iterate frames for processing
     for (i,fr) in enumerate(frame_idxs):
-        print(f'{fr} {time.time()} fetch data')
+        #print(f'{fr} {time.time()} fetch data')
         frames = np.array([ image.get_processed_frame(np.double(readers[iC].get_data(fr))) for iC in range(len(videos)) ])
-        print(f'{fr} {time.time()} compute minima')
+        #print(f'{fr} {time.time()} compute minima')
         minima = [ np.flip(image.get_minima(frames[iC],gopts['led_thres']),axis=1) for iC in range(len(videos)) ] # minima return mat idxs, camera expects xy
         
-        print(f'{fr} {time.time()} triangulate')
+        #print(f'{fr} {time.time()} triangulate')
         points = camera.triangulate_points_nocorr(minima,offsets,calib,gopts['linedist_thres'])
         
         fr_out[i] = fr
         
-        print(f'{fr} {time.time()} find trafo')
+        #print(f'{fr} {time.time()} find trafo')
         if len(points)>0:
             R[i], t[i], errors[i] = geometry.find_trafo_nocorr(space_coords,points,gopts['corr_thres'])
-        print(f'{fr} {time.time()} done')
+        #print(f'{fr} {time.time()} done')
 
     return (R,t,errors,fr_out)
 
 
 def track_frames_mp(gopts):
-    print('Running in MP mode 2')
-    print(f'Tracking started {time.time()}')
+    print(f'Tracking started in MP mode / {time.time()}')
     space_coords = mtt.read_spacecoords(gopts['mtt_file'])
     calib = mtt.read_calib(gopts['mtt_file'])
     videos = mtt.read_video_paths(gopts['video_dir'],gopts['mtt_file']) 
