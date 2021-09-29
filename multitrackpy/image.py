@@ -1,5 +1,6 @@
 from scipy import ndimage
 import numpy as np
+import sys
 
 def get_processed_frame(frame,kernel = [[0.1,0.2,0.1],[0.2,1,0.2],[.1,0.2,0.1]]):
     #kernel = kernel/np.sum(kernel)
@@ -9,6 +10,11 @@ def get_processed_frame(frame,kernel = [[0.1,0.2,0.1],[0.2,1,0.2],[.1,0.2,0.1]])
 
 def get_minima(framemap, led_thres=200):
     ledijs = np.array(np.where(framemap>led_thres))
+    print(f"Detecting minimum from {ledijs.shape} thresholded pixels")
+    if ledijs.shape[1]>5000:
+        print(f'Detected too many ({ledijs.shape})threshold pixels, something is wrong. Exiting.', file=sys.stderr)
+        exit()
+
     """localmax = framemap[ledijs[0],ledijs[1]] >= np.max(np.array([
      framemap[ledijs[0]+1,ledijs[1]],
      framemap[ledijs[0]-1,ledijs[1]],
