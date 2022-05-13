@@ -1,42 +1,5 @@
 import numpy as np
-import scipy
-from .rigid_body_transform_3d import rigid_transform_3D
-
-
-def get_line_dist(r1, e1, r2, e2):
-    n = np.cross(e1, e2)
-    return np.abs(np.sum(n * (r1 - r2)))
-
-
-def triangulate_3derr(bases, vecs):
-    p = np.empty(3)
-    p[:] = np.NaN
-
-    rayok = ~np.any([
-        np.isnan(bases),
-        np.isnan(vecs)
-    ], axis=(0, 2))
-
-    bases = bases[rayok]
-    vecs = vecs[rayok]
-
-    n = bases.shape[0]
-    if n < 2:
-        return p
-
-    M = np.empty((n, 3, 3))
-    Mbase = np.empty((n, 3, 1))
-
-    for u in range(n):
-        planebasis = scipy.linalg.null_space(vecs[np.newaxis, u])
-        M[u] = planebasis @ planebasis.T
-        Mbase[u] = M[u] @ bases[u, np.newaxis].T
-
-    if np.linalg.matrix_rank(np.sum(M, axis=0)) < 3:
-        return p
-
-    return np.squeeze(np.linalg.solve(np.sum(M, axis=0), np.sum(Mbase, axis=0)).T)
-
+from multitrackpy.rigid_body_transform_3d import rigid_transform_3D
 
 def find_trafo_nocorr(pc1, pc2, corr_thres):
     errors = np.empty(pc1.shape[0])
@@ -60,6 +23,7 @@ def calc_dists(points, idx):
     return np.sqrt(np.sum((points - points[idx]) ** 2, axis=1))
 
 
+# Finds correspondences between two point clouds by identifying points by their distances to other points
 def find_correspondences(p1, p2, corr_thres=0.1):
     p1dists = [np.sort(calc_dists(p1, i)) for i in range(p1.shape[0])]
     p2dists = [np.sort(calc_dists(p2, i)) for i in range(p2.shape[0])]

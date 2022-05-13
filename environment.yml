@@ -12,5 +12,6 @@ dependencies:
   - scikit-image
   - pip
   - pip:
+    - bbo_calibcamlib
     - bbo-ccvtools
     - construct

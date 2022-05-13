@@ -26,5 +26,5 @@ setup(
     ],
     packages=['multitrackpy'],
     include_package_data=True,
-    install_requires=["scipy", "numpy", "imageio", "ccvtools", "h5py"],
+    install_requires=["scipy", "numpy", "imageio", "bbo_ccvtools", "h5py"],
 )

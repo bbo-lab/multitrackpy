@@ -1,32 +1,30 @@
 import numpy as np
 import h5py
-
+from pprint import pprint
 
 def read_calib(mtt_path):
     mtt_file = h5py.File(mtt_path)
 
     istracking = np.squeeze(np.asarray([mtt_file['mt']['cam_istracking']]) == 1)
     calind = np.squeeze(np.int32(mtt_file['mt']['calind']))[istracking] - 1
-    calibs = []
+
+    mc = {
+        'Rglobal': np.asarray(mtt_file['mt']['mc']['Rglobal']).transpose((0, 2, 1)),  # in reverse order in h5 file!
+        'Tglobal': np.asarray(mtt_file['mt']['mc']['Tglobal']),
+        'cal': []
+    }
 
     for ci in calind:
-        w2cR = np.squeeze(
-            np.asarray(mtt_file['mt']['mc']['Rglobal'])[ci])  # The way matlab saves arrays alread includes a permute!
-        w2cT = np.asarray((w2cR @ -np.asarray(mtt_file['mt']['mc']['Tglobal'])[ci].T))
+        mc['cal'].append({
+            'scaling': np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['scaling'][ci, 0]]).T[0],
+            'icent': np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['icent'][ci, 0]]).T[0],
+            'distortion_coefs': np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['distortion_coefs'][ci, 0]]),
+            'sensorsize': np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['sensorsize'][ci, 0]]).T[0],
+            'scale_pixels': np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['scale_pixels'][ci, 0]]),
+        })
 
-        scaling = np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['scaling'][ci, 0]]).T[0]
-        icent = np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['icent'][ci, 0]]).T[0]
-        camA = np.asarray([[scaling[0], scaling[2], icent[0]],
-                           [0, scaling[1], icent[1]]])
-
-        camk = np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['distortion_coefs'][ci, 0]])
-        sensorsize = np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['sensorsize'][ci, 0]])
-        scalepixels = np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['scale_pixels'][ci, 0]])
-
-        calibs.append({'w2cR': w2cR, 'w2cT': w2cT, 'camA': camA, 'camk': camk, 'sensorsize': sensorsize,
-                       'scalepixels': scalepixels})
-
-    return calibs
+    # pprint(mc)
+    return mc
 
 
 def read_video_paths(vid_dir, mtt_path):

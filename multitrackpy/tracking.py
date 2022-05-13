@@ -5,10 +5,10 @@ from multiprocessing import Pool
 from functools import partial
 import time
 
+import calibcamlib
 from . import mtt
 from . import image
-from . import geometry
-from . import camera
+from . import pointcloud
 from . import helper
 
 
@@ -23,7 +23,7 @@ def track_frames(gopts):
 
 
 def track_frames_sp(gopts,
-                    space_coords=None, calib=None, videos=None, readers=None, offsets=None,
+                    space_coords=None, camera_setup: calibcamlib.Camerasystem = None, videos=None, readers=None, offsets=None,
                     R=None, t=None, errors=None, fr_out=None  # E.g. for writing directly into slices of larger array
                     ):
     frame_idxs = gopts['frame_idxs']
@@ -31,8 +31,9 @@ def track_frames_sp(gopts,
     # Get inputs if not supplied
     if space_coords is None:
         space_coords = mtt.read_spacecoords(gopts['mtt_file'])
-    if calib is None:
+    if camera_setup is None:
         calib = mtt.read_calib(gopts['mtt_file'])
+        camera_setup = calibcamlib.Camerasystem.from_mcl(calib)
     if videos is None:
         videos = mtt.read_video_paths(gopts['video_dir'], gopts['mtt_file'])
     if readers is None:
@@ -58,18 +59,19 @@ def track_frames_sp(gopts,
     for (i, fr) in enumerate(frame_idxs):
         # print(f'{fr} {time.time()} fetch data')
         frames = np.array([image.get_processed_frame(np.double(readers[iC].get_data(fr))) for iC in range(len(videos))])
+
         # print(f'{fr} {time.time()} compute minima')
         minima = [np.flip(image.get_minima(frames[iC], gopts['led_thres']), axis=1) for iC in
                   range(len(videos))]  # minima return mat idxs, camera expects xy
 
         # print(f'{fr} {time.time()} triangulate')
-        points = camera.triangulate_points_nocorr(minima, offsets, calib, gopts['linedist_thres'])
+        points = camera_setup.triangulate_nopointcorr(minima, offsets, gopts['linedist_thres'])
 
         fr_out[i] = fr
 
         # print(f'{fr} {time.time()} find trafo')
         if len(points) > 0:
-            R[i], t[i], errors[i] = geometry.find_trafo_nocorr(space_coords, points, gopts['corr_thres'])
+            R[i], t[i], errors[i] = pointcloud.find_trafo_nocorr(space_coords, points, gopts['corr_thres'])
         # print(f'{fr} {time.time()} done')
 
     return R, t, errors, fr_out
@@ -82,9 +84,11 @@ def track_frames_mp(gopts):
     videos = mtt.read_video_paths(gopts['video_dir'], gopts['mtt_file'])
     print(f'Using {len(videos)} tracking cams')
 
+    camera_setup = calibcamlib.Camerasystem.from_mcl(calib)
+
     preloaddict = {
         'space_coords': space_coords,
-        'calib': calib,
+        'camera_setup':  camera_setup,
         'videos': videos,
     }
 
@@ -98,7 +102,8 @@ def track_frames_mp(gopts):
     fr_out = np.empty((len(frame_idxs)), dtype=np.int32)
 
     slice_list = list(helper.make_slices(len(frame_idxs), gopts['n_cpu']))
-    arg_list = [helper.dict_copyreplace(gopts, {'frame_idxs': frame_idxs[sl[0]:sl[1]]}) for sl in slice_list]
+    # shallow-merge frame ranges into copies of gopts
+    arg_list = [gopts.copy() | {'frame_idxs': frame_idxs[sl[0]:sl[1]]} for sl in slice_list]
 
     print(f'Using {gopts["n_cpu"]} workers')
     with Pool(gopts['n_cpu']) as p:
