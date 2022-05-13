@@ -28,6 +28,7 @@ Volume 9 Issue 5, May 1987"""
 
 import numpy as np
 
+
 # Input: expects 3xN matrix of points
 # Returns R,t
 # R = 3x3 rotation matrix
@@ -59,7 +60,7 @@ def rigid_transform_3D(A, B):
     H = Am @ np.transpose(Bm)
 
     # sanity check
-    #if linalg.matrix_rank(H) < 3:
+    # if linalg.matrix_rank(H) < 3:
     #    raise ValueError("rank of H = {}, expecting 3".format(linalg.matrix_rank(H)))
 
     # find rotation
@@ -68,7 +69,7 @@ def rigid_transform_3D(A, B):
 
     # special reflection case
     if np.linalg.det(R) < 0:
-        Vt[2,:] *= -1
+        Vt[2, :] *= -1
         R = Vt.T @ U.T
 
     t = -R @ centroid_A + centroid_B
