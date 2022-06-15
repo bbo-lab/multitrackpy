@@ -12,6 +12,7 @@ dependencies:
   - scikit-image
   - pip
   - pip:
+    - bbo_multitrackpy
     - bbo_calibcamlib
     - bbo-ccvtools
     - construct
