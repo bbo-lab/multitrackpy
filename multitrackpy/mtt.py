@@ -16,11 +16,11 @@ def read_calib(mtt_path):
 
     for ci in calind:
         mc['cal'].append({
-            'scaling': np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['scaling'][ci, 0]]).T[0],
-            'icent': np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['icent'][ci, 0]]).T[0],
-            'distortion_coefs': np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['distortion_coefs'][ci, 0]]),
-            'sensorsize': np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['sensorsize'][ci, 0]]).T[0],
-            'scale_pixels': np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['scale_pixels'][ci, 0]]),
+            'scaling': np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['scaling'][ci, 0]]).ravel(),
+            'icent': np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['icent'][ci, 0]]).ravel(),
+            'distortion_coefs': np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['distortion_coefs'][ci, 0]]).ravel(),
+            'sensorsize': np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['sensorsize'][ci, 0]]).ravel(),
+            'scale_pixels': np.asarray(mtt_file[mtt_file['mt']['mc']['cal']['scale_pixels'][ci, 0]]).ravel()[0],
         })
 
     # pprint(mc)
