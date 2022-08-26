@@ -1,6 +1,6 @@
 import numpy as np
 import h5py
-from pprint import pprint
+
 
 def read_calib(mtt_path):
     mtt_file = h5py.File(mtt_path)
@@ -9,8 +9,8 @@ def read_calib(mtt_path):
     calind = np.squeeze(np.int32(mtt_file['mt']['calind']))[istracking] - 1
 
     mc = {
-        'Rglobal': np.asarray(mtt_file['mt']['mc']['Rglobal']).transpose((0, 2, 1)),  # in reverse order in h5 file!
-        'Tglobal': np.asarray(mtt_file['mt']['mc']['Tglobal']),
+        'Rglobal': np.asarray(mtt_file['mt']['mc']['Rglobal']).transpose((0, 2, 1))[calind],  # in reverse order in h5 file!
+        'Tglobal': np.asarray(mtt_file['mt']['mc']['Tglobal'])[calind],
         'cal': []
     }
 
