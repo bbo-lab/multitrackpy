@@ -48,7 +48,7 @@ def track_frames_sp(opts,
                   range(len(videos))]  # minima return mat idxs, camera expects xy
 
         # print(f'{fr} {time.time()} triangulate')
-        points = camera_setup.triangulate_nopointcorr(minima, offsets, opts['linedist_thres'])
+        points = camera_setup.triangulate_nopointcorr(minima, offsets, opts['linedist_thres'], max_points=20)
 
         fr_out[i] = fr
 
