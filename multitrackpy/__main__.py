@@ -7,7 +7,7 @@ import argparse
 import time
 from datetime import datetime
 
-from multitrackpy import mtt
+from multitrackpy import mtt, mvd
 from multitrackpy import tracking
 from multitrackpy.tracking_opts import get_default_opts
 def main():
@@ -33,6 +33,10 @@ def main():
     if args.END_IDX == -1:
         args.END_IDX = mtt.read_frame_n(opts['mtt_file'])
     opts['frame_idxs'] = range(args.START_IDX, args.END_IDX)
+
+    # Build video frames
+    if args.mvd_file is not None:
+        mvd_times = mvd.read_times(args.mvd_file)
 
     # Detect frames
     (R, t, errors, fr_out) = tracking.track_frames(opts)

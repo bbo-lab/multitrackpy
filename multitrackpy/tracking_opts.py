@@ -1,6 +1,7 @@
 def get_default_opts():
     return {
         'mtt_file': '',
+        'mvd_file': None,
         'video_dir': '',
         'frame_idxs': None,
         'linedist_thres': 0.2,
