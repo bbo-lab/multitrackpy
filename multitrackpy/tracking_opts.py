@@ -1,9 +1,10 @@
 def get_default_opts():
     return {
         'mtt_file': '',
-        'mvd_file': None,
+        'mvd_file': '',
         'video_dir': '',
         'frame_idxs': None,
+        'frame_maps': None,
         'linedist_thres': 0.2,
         # Max distance between two cam lines to assume that the respective detections come from the same LED (calibration units)
         'corr_thres': 0.1,

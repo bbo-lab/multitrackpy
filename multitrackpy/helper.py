@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def make_slices(a, n):
     k, m = divmod(a, n)
     return ((i * k + min(i, m), (i + 1) * k + min(i + 1, m)) for i in range(n))
@@ -17,3 +20,12 @@ def deepmerge_dicts(source, destination):
             destination[key] = value
 
     return destination
+
+
+def find_closest_time(sample_time, time_base: np.ndarray):
+    hist = np.searchsorted(time_base, sample_time, side='right')-1
+    dt = np.median(np.diff(time_base))
+    right_mask = sample_time-time_base[hist] > dt/2
+    hist[right_mask] = hist[right_mask] + 1
+    
+    return hist

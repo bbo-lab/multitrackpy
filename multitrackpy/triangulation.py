@@ -41,7 +41,12 @@ def track_frames_sp(opts,
     # Iterate frames for processing
     for (i, fr) in enumerate(frame_idxs):
         # print(f'{fr} {time.time()} fetch data')
-        frames = np.array([image.get_processed_frame(np.double(readers[iC].get_data(fr))) for iC in range(len(videos))])
+        if opts['frame_maps'] is None:
+            frames = np.array(
+                [image.get_processed_frame(np.double(readers[iC].get_data(fr))) for iC in range(len(videos))])
+        else:
+            frames = np.array(
+                [image.get_processed_frame(np.double(readers[iC].get_data(opts['frame_maps'][iC][fr]))) for iC in range(len(videos))])
 
         # print(f'{fr} {time.time()} compute minima')
         minima = [np.flip(image.get_minima(frames[iC], opts['led_thres']), axis=1) for iC in

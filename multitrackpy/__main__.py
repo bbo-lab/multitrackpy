@@ -1,5 +1,4 @@
 import sys
-sys.path.insert(0, '/home/voit/code/calibcamlib')
 
 from scipy.io import savemat
 import numpy as np
@@ -7,9 +6,11 @@ import argparse
 import time
 from datetime import datetime
 
-from multitrackpy import mtt, mvd
+from multitrackpy import mtt, mvd, helper
 from multitrackpy import tracking
 from multitrackpy.tracking_opts import get_default_opts
+
+
 def main():
     print(datetime.now().strftime("%m/%d/%Y, %H:%M:%S"))
     # Get default job options
@@ -35,8 +36,11 @@ def main():
     opts['frame_idxs'] = range(args.START_IDX, args.END_IDX)
 
     # Build video frames
-    if args.mvd_file is not None:
-        mvd_times = mvd.read_times(args.mvd_file)
+    if not args.mvd_file == '':
+        vidnames = mtt.read_video_paths(opts['video_dir'], opts['mtt_file'], filenames_only=True)
+        time_base = mtt.read_time_base(opts['mtt_file'])
+        mvd_times = mvd.read_times(opts['mvd_file'], vidnames)
+        opts['frame_maps'] = [helper.find_closest_time(mvd_time, time_base) for mvd_time in mvd_times]
 
     # Detect frames
     (R, t, errors, fr_out) = tracking.track_frames(opts)

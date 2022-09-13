@@ -1,5 +1,6 @@
 import numpy as np
 import h5py
+import os.path
 
 
 def read_calib(mtt_path):
@@ -27,11 +28,15 @@ def read_calib(mtt_path):
     return mc
 
 
-def read_video_paths(vid_dir, mtt_path):
+def read_video_paths(vid_dir, mtt_path, filenames_only=False):
     mtt_file = h5py.File(mtt_path)
     istracking = np.squeeze(np.asarray([mtt_file['mt']['cam_istracking']]) == 1)
-    return [vid_dir + ''.join([chr(c) for c in mtt_file[mtt_file['mt']['vidname'][0, i]][:].T.astype(np.int)[0]]) for i
-            in np.where(istracking)[0]]
+    filenames = [''.join([chr(c) for c in mtt_file[mtt_file['mt']['vidname'][0, i]][:].T.astype(np.int)[0]]) for i
+                 in np.where(istracking)[0]]
+    if not filenames_only:
+        filenames = [os.path.join(vid_dir, f) for f in filenames]
+
+    return filenames
 
 
 def read_spacecoords(mtt_path):
@@ -42,3 +47,7 @@ def read_spacecoords(mtt_path):
 def read_frame_n(mtt_path):
     mtt_file = h5py.File(mtt_path)
     return len(mtt_file['mt']['t'])
+
+def read_time_base(mtt_file):
+    mtt_file = h5py.File(mtt_file)
+    return np.asarray(mtt_file['mt']['t']).ravel()
