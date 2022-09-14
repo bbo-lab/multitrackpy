@@ -62,4 +62,7 @@ def track_frames_sp(opts,
             R[i], t[i], errors[i] = pointcloud.find_trafo_nocorr(space_coords, points, opts['corr_thres'])
         # print(f'{fr} {time.time()} done')
 
+        if not np.any(np.isnan(R[i])):
+            print(f"Found pose in frame {fr} ({[opts['frame_maps'][iC][fr] for iC in range(len(videos))]})")
+
     return R, t, errors, fr_out

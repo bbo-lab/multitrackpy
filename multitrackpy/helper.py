@@ -23,9 +23,9 @@ def deepmerge_dicts(source, destination):
 
 
 def find_closest_time(sample_time, time_base: np.ndarray):
-    hist = np.searchsorted(time_base, sample_time, side='right')-1
+    indices = np.searchsorted(sample_time, time_base, side='right') - 1
     dt = np.median(np.diff(time_base))
-    right_mask = sample_time-time_base[hist] > dt/2
-    hist[right_mask] = hist[right_mask] + 1
+    right_mask = time_base-sample_time[indices] > dt/2
+    indices[right_mask] = indices[right_mask] + 1
     
-    return hist
+    return indices
