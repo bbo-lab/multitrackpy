@@ -36,7 +36,7 @@ def main():
     opts['frame_idxs'] = range(args.START_IDX, args.END_IDX)
 
     # Build video frames
-    if not args.mvd_file == '':
+    if not args.mvd_file == 'None':
         vidnames = mtt.read_video_paths(opts['video_dir'], opts['mtt_file'], filenames_only=True)
         time_base = mtt.read_time_base(opts['mtt_file'])
         mvd_times = mvd.read_times(opts['mvd_file'], vidnames)

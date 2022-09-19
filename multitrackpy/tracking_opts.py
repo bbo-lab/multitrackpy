@@ -1,7 +1,7 @@
 def get_default_opts():
     return {
         'mtt_file': '',
-        'mvd_file': '',
+        'mvd_file': 'None',  # '' would make flag non-optional
         'video_dir': '',
         'frame_idxs': None,
         'frame_maps': None,
