@@ -31,7 +31,7 @@ def read_calib(mtt_path):
 def read_video_paths(vid_dir, mtt_path, filenames_only=False):
     mtt_file = h5py.File(mtt_path)
     istracking = np.squeeze(np.asarray([mtt_file['mt']['cam_istracking']]) == 1)
-    filenames = [''.join([chr(c) for c in mtt_file[mtt_file['mt']['vidname'][0, i]][:].T.astype(np.int)[0]]) for i
+    filenames = [''.join([chr(c) for c in mtt_file[mtt_file['mt']['vidname'][0, i]][:].T.astype(np.intc)[0]]) for i
                  in np.where(istracking)[0]]
     if not filenames_only:
         filenames = [os.path.join(vid_dir, f) for f in filenames]
