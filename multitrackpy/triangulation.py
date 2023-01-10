@@ -61,26 +61,29 @@ def track_frames_sp(opts,
             print(f"{fr} ({cam_fr_idxs}): Found {[m.shape[0] for m in minima]} minima.")
             print(f"{fr} ({cam_fr_idxs}): Triangulated {len(points)} points.")
         if opts["debug"] > 1:
-            import matplotlib
-            from matplotlib import pyplot as plt
-            matplotlib.use('Agg')
-            rep_points = camera_setup.project(points, offsets)
-            for i_cam, frame in enumerate(frames):
-                fig = plt.figure(frameon=False, figsize=(frame.shape[0]/16, frame.shape[1]/16), dpi=80)
-                ax = plt.Axes(fig, [0., 0., 1., 1.])
-                ax.set_axis_off()
-                fig.add_axes(ax)
-                plt.imshow(frame)
-                plt.plot(minima[i_cam][:, 0], minima[i_cam][:, 1], 'r+')
-                plt.savefig(Path(opts["mtt_file"]).parent / f"debug_minima_{i_cam}_{fr}_{cam_fr_idxs[i_cam]}.png")
+            try:
+                import matplotlib
+                from matplotlib import pyplot as plt
+                matplotlib.use('Agg')
+                rep_points = camera_setup.project(points, offsets)
+                for i_cam, frame in enumerate(frames):
+                    fig = plt.figure(frameon=False, figsize=(frame.shape[0]/16, frame.shape[1]/16), dpi=80)
+                    ax = plt.Axes(fig, [0., 0., 1., 1.])
+                    ax.set_axis_off()
+                    fig.add_axes(ax)
+                    plt.imshow(frame)
+                    plt.plot(minima[i_cam][:, 0], minima[i_cam][:, 1], 'r+')
+                    plt.savefig(Path(opts["mtt_file"]).parent / f"debug_minima_{i_cam}_{fr}_{cam_fr_idxs[i_cam]}.png")
 
-                fig = plt.figure(frameon=False, figsize=(frame.shape[0]/16, frame.shape[1]/16), dpi=80)
-                ax = plt.Axes(fig, [0., 0., 1., 1.])
-                ax.set_axis_off()
-                fig.add_axes(ax)
-                plt.imshow(frame)
-                plt.plot(rep_points[i_cam, :, 0], rep_points[i_cam, :, 1], 'r+')
-                plt.savefig(Path(opts["mtt_file"]).parent / f"debug_triangulation_{i_cam}_{fr}_{cam_fr_idxs[i_cam]}.png")
+                    fig = plt.figure(frameon=False, figsize=(frame.shape[0]/16, frame.shape[1]/16), dpi=80)
+                    ax = plt.Axes(fig, [0., 0., 1., 1.])
+                    ax.set_axis_off()
+                    fig.add_axes(ax)
+                    plt.imshow(frame)
+                    plt.plot(rep_points[i_cam, :, 0], rep_points[i_cam, :, 1], 'r+')
+                    plt.savefig(Path(opts["mtt_file"]).parent / f"debug_triangulation_{i_cam}_{fr}_{cam_fr_idxs[i_cam]}.png")
+            except ModuleNotFoundError as e:
+                print(f"Missing module matplotlib, skipping debug image generation.")
 
         fr_out[i] = fr
 
