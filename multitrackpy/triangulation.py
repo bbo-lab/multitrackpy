@@ -1,12 +1,13 @@
 import imageio
 import numpy as np
+from pathlib import Path
 
 import calibcamlib
 from multitrackpy import mtt, image, pointcloud
 
-
 def track_frames_sp(opts,
-                    space_coords=None, camera_setup: calibcamlib.Camerasystem = None, videos=None, readers=None, offsets=None,
+                    space_coords=None, camera_setup: calibcamlib.Camerasystem = None, videos=None, readers=None,
+                    offsets=None,
                     R=None, t=None, errors=None, fr_out=None  # E.g. for writing directly into slices of larger array
                     ):
     frame_idxs = opts['frame_idxs']
@@ -42,23 +43,44 @@ def track_frames_sp(opts,
     for (i, fr) in enumerate(frame_idxs):
         # print(f'{fr} {time.time()} fetch data')
         if opts['frame_maps'] is None:
-            frames = np.array(
-                [image.get_processed_frame(np.double(readers[iC].get_data(fr))) for iC in range(len(videos))])
+            cam_fr_idxs = [fr for _ in range(len(videos))]
         else:
-            frames = []
-            for iC in range(len(videos)):
-                frame_idx = opts['frame_maps'][iC][fr]
-                if frame_idx<0:
-                    frames.append(image.get_processed_frame(np.double(np.zeros(shape=readers[iC].get_data(0).shape))))
-                else:
-                    frames.append(image.get_processed_frame(np.double(readers[iC].get_data(frame_idx))))
+            cam_fr_idxs = [opts['frame_maps'][iC][fr] if
+                           opts['frame_maps'][iC][fr] >= 0 else 0 for iC in range(len(videos))]
+
+        frames = np.array(
+            [image.get_processed_frame(np.double(readers[iC].get_data(cam_fr_idxs[iC]))) for iC in range(len(videos))])
 
         # print(f'{fr} {time.time()} compute minima')
         minima = [np.flip(image.get_minima(frames[iC], opts['led_thres']), axis=1) for iC in
                   range(len(videos))]  # minima return mat idxs, camera expects xy
 
-        # print(f'{fr} {time.time()} triangulate')
         points = camera_setup.triangulate_nopointcorr(minima, offsets, opts['linedist_thres'], max_points=20)
+
+        if opts["debug"] > 0:
+            print(f"{fr} ({cam_fr_idxs}): Found {[m.shape[0] for m in minima]} minima.")
+            print(f"{fr} ({cam_fr_idxs}): Triangulated {len(points)} points.")
+        if opts["debug"] > 1:
+            import matplotlib
+            from matplotlib import pyplot as plt
+            matplotlib.use('Agg')
+            rep_points = camera_setup.project(points, offsets)
+            for i_cam, frame in enumerate(frames):
+                fig = plt.figure(frameon=False, figsize=(frame.shape[0]/16, frame.shape[1]/16), dpi=80)
+                ax = plt.Axes(fig, [0., 0., 1., 1.])
+                ax.set_axis_off()
+                fig.add_axes(ax)
+                plt.imshow(frame)
+                plt.plot(minima[i_cam][:, 0], minima[i_cam][:, 1], 'r+')
+                plt.savefig(Path(opts["mtt_file"]).parent / f"debug_minima_{i_cam}_{fr}_{cam_fr_idxs[i_cam]}.png")
+
+                fig = plt.figure(frameon=False, figsize=(frame.shape[0]/16, frame.shape[1]/16), dpi=80)
+                ax = plt.Axes(fig, [0., 0., 1., 1.])
+                ax.set_axis_off()
+                fig.add_axes(ax)
+                plt.imshow(frame)
+                plt.plot(rep_points[i_cam, :, 0], rep_points[i_cam, :, 1], 'r+')
+                plt.savefig(Path(opts["mtt_file"]).parent / f"debug_triangulation_{i_cam}_{fr}_{cam_fr_idxs[i_cam]}.png")
 
         fr_out[i] = fr
 
@@ -68,6 +90,6 @@ def track_frames_sp(opts,
         # print(f'{fr} {time.time()} done')
 
         if not np.any(np.isnan(R[i])):
-            print(f"Found pose in frame {fr} ({[opts['frame_maps'][iC][fr] for iC in range(len(videos))]})")
+            print(f"{fr} ({cam_fr_idxs}): Found pose")
 
     return R, t, errors, fr_out

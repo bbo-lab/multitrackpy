@@ -1,8 +1,8 @@
 def get_default_opts():
     return {
         'mtt_file': '',
-        'mvd_file': 'None',  # '' would make flag non-optional
         'video_dir': '',
+        'mvd_file': 'None',  # '' would make flag non-optional
         'frame_idxs': None,
         'frame_maps': None,
         'linedist_thres': 0.2,
@@ -11,6 +11,7 @@ def get_default_opts():
         # Max diffeerence in point distance for correlation between model and detection (calibration units)
         'led_thres': 150,  # Minimal brightness of LED after image processing (image brightness units)
         'n_cpu': 2,
+        'debug': 0
     }
 
 

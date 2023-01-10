@@ -24,7 +24,7 @@ def main():
         if not key == 'frame_idxs':
             parser.add_argument('--' + key, type=type(opts[key]), required=opts[key] == '', nargs=1)
     args = parser.parse_args()
-
+    print(args)
     # Modify defaults from command line
     for key in opts:
         if not key == 'frame_idxs' and args.__dict__[key] is not None:
@@ -36,11 +36,15 @@ def main():
     opts['frame_idxs'] = range(args.START_IDX, args.END_IDX)
 
     # Build video frames
-    if not args.mvd_file == 'None':
+    if args.mvd_file is not None:
+        print(args.mvd_file)
+        print(type(args.mvd_file))
         vidnames = mtt.read_video_paths(opts['video_dir'], opts['mtt_file'], filenames_only=True)
         time_base = mtt.read_time_base(opts['mtt_file'])
         mvd_times = mvd.read_times(opts['mvd_file'], vidnames)
         opts['frame_maps'] = [helper.find_closest_time(mvd_time, time_base) for mvd_time in mvd_times]
+
+    print(opts)
 
     # Detect frames
     (R, t, errors, fr_out) = tracking.track_frames(opts)
