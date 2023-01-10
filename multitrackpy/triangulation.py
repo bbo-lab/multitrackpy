@@ -5,6 +5,8 @@ from pathlib import Path
 import calibcamlib
 from multitrackpy import mtt, image, pointcloud
 
+
+# noinspection PyPackageRequirements,DuplicatedCode
 def track_frames_sp(opts,
                     space_coords=None, camera_setup: calibcamlib.Camerasystem = None, videos=None, readers=None,
                     offsets=None,
@@ -82,7 +84,7 @@ def track_frames_sp(opts,
                     plt.imshow(frame)
                     plt.plot(rep_points[i_cam, :, 0], rep_points[i_cam, :, 1], 'r+')
                     plt.savefig(Path(opts["mtt_file"]).parent / f"debug_triangulation_{i_cam}_{fr}_{cam_fr_idxs[i_cam]}.png")
-            except ModuleNotFoundError as e:
+            except ModuleNotFoundError:
                 print(f"Missing module matplotlib, skipping debug image generation.")
 
         fr_out[i] = fr
