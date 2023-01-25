@@ -32,7 +32,7 @@ def get_minima(framemap, led_thres=200):
     ledijs = np.array([ledijs[0][localmax],ledijs[1][localmax]])"""
 
     labelidx = 1
-    lmlabels = np.zeros(ledijs.shape[1], dtype=np.int)
+    lmlabels = np.zeros(ledijs.shape[1], dtype=np.int32)
 
     for (i, lij) in enumerate(ledijs.T):
         for (j, offs) in enumerate(np.array([[1, 0], [1, -1], [1, 1], [0, 1]])):

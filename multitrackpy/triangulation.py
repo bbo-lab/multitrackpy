@@ -91,7 +91,7 @@ def track_frames_sp(opts,
 
         # print(f'{fr} {time.time()} find trafo')
         if len(points) > 0:
-            R[i], t[i], errors[i] = pointcloud.find_trafo_nocorr(space_coords, points, opts['corr_thres'])
+            R[i], t[i], errors[i] = pointcloud.find_trafo_nocorr(space_coords, points, opts['corr_thres'], opts['track_ambiguous'])
         # print(f'{fr} {time.time()} done')
 
         if not np.any(np.isnan(R[i])):

@@ -11,6 +11,7 @@ def get_default_opts():
         # Max diffeerence in point distance for correlation between model and detection (calibration units)
         'led_thres': 150,  # Minimal brightness of LED after image processing (image brightness units)
         'n_cpu': 2,
+        'track_ambiguous': False,
         'debug': 0
     }
 

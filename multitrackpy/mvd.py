@@ -4,7 +4,7 @@ import scipy.io as sio
 
 
 def read_times(mvd_path, vidnames):
-    mvd_file = sio.loadmat(mvd_path)
+    mvd_file = sio.loadmat(mvd_path, appendmat=False)
     # mvd_file = h5py.File(mvd_path)
 
     times = []

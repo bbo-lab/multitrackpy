@@ -22,13 +22,20 @@ def main():
     parser.add_argument('END_IDX', type=int, help="End frame idx")
     for key in opts:
         if not key == 'frame_idxs':
-            parser.add_argument('--' + key, type=type(opts[key]), required=opts[key] == '', nargs=1)
+            if isinstance(opts[key], bool):
+                parser.add_argument('--' + key, required=False, default=False, action='store_true')
+            else:
+                parser.add_argument('--' + key, type=type(opts[key]), required=opts[key] == '', nargs=1)
+
     args = parser.parse_args()
     print(args)
     # Modify defaults from command line
     for key in opts:
         if not key == 'frame_idxs' and args.__dict__[key] is not None:
-            opts[key] = args.__dict__[key][0]
+            if isinstance(opts[key], bool):
+                opts[key] = args.__dict__[key]
+            else:
+                opts[key] = args.__dict__[key][0]
 
     # Build frame range from command line
     if args.END_IDX == -1:
