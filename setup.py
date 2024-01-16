@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="bbo-multitrackpy",
-    version="1.1.5",
+    version="1.1.6",
     description="Detect head positions from MTT files",
     long_description=README,
     long_description_content_type="text/markdown",

@@ -10,6 +10,7 @@ def get_default_opts():
         'corr_thres': 0.1,
         # Max diffeerence in point distance for correlation between model and detection (calibration units)
         'led_thres': 150,  # Minimal brightness of LED after image processing (image brightness units)
+        'led_maxpixels': 5000,  # Maximal number of pixels above threshold accepted. This is usually exceed by either very overexposed leds (barely) or visible light images (by oders of magnitude)
         'n_cpu': 2,
         'track_ambiguous': False,
         'debug': 0

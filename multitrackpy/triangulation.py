@@ -54,7 +54,7 @@ def track_frames_sp(opts,
             [image.get_processed_frame(np.double(readers[iC].get_data(cam_fr_idxs[iC]))) for iC in range(len(videos))])
 
         # print(f'{fr} {time.time()} compute minima')
-        minima = [np.flip(image.get_minima(frames[iC], opts['led_thres']), axis=1) for iC in
+        minima = [np.flip(image.get_minima(frames[iC], opts['led_thres'], led_maxpixels=opts['led_thres']), axis=1) for iC in
                   range(len(videos))]  # minima return mat idxs, camera expects xy
 
         points = camera_setup.triangulate_nopointcorr(minima, offsets, opts['linedist_thres'], max_points=20)
