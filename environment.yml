@@ -1,8 +1,6 @@
 name: multitrackpy
 channels:
-  - open3d-admin
   - conda-forge
-  - defaults
 dependencies:
   - python=3.10
   - numpy
@@ -12,7 +10,9 @@ dependencies:
   - scikit-image
   - pip
   - pip:
-    - bbo_multitrackpy
-    - bbo_calibcamlib
+    - bbo-multitrackpy
+    - bbo-calibcamlib
     - bbo-ccvtools
+    - bbo-bbo
+    - matplotlib
     - construct

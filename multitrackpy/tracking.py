@@ -37,11 +37,11 @@ def detect_frames_mp(opts):
 
     frame_idxs = np.asarray(list(opts['frame_idxs']))
     R = np.empty((len(frame_idxs), 3, 3))
-    R[:] = np.NaN
+    R[:] = np.nan
     t = np.empty((len(frame_idxs), 3, 1))
-    t[:] = np.NaN
+    t[:] = np.nan
     errors = np.empty((len(frame_idxs), space_coords.shape[0]))
-    errors[:] = np.NaN
+    errors[:] = np.nan
     fr_out = np.empty((len(frame_idxs)), dtype=np.int32)
 
     slice_list = list(helper.make_slices(len(frame_idxs), opts['n_cpu']))

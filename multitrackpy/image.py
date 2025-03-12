@@ -2,7 +2,6 @@
 import numpy as np
 import sys
 
-
 def get_processed_frame(frame, kernel=None):
     # if kernel is None:
     #     kernel = [[0.1, 0.2, 0.1], [0.2, 1, 0.2], [.1, 0.2, 0.1]]
@@ -17,7 +16,6 @@ def get_minima(framemap, led_thres=200, led_maxpixels=5000):
     # print(f"Detecting minimum from {ledijs.shape[1]} thresholded pixels")
     if ledijs.shape[1] > led_maxpixels:
         print(f'Detected too many ({ledijs.shape[1]})threshold pixels, something is wrong. Exiting.', file=sys.stderr)
-        exit()
 
     """localmax = framemap[ledijs[0],ledijs[1]] >= np.max(np.array([
      framemap[ledijs[0]+1,ledijs[1]],

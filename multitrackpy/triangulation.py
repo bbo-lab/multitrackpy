@@ -37,9 +37,9 @@ def track_frames_sp(opts,
         assert (t is not None and errors is not None and fr_out is not None)
 
     # Initilize arrays
-    R[:] = np.NaN
-    t[:] = np.NaN
-    errors[:] = np.NaN
+    R[:] = np.nan
+    t[:] = np.nan
+    errors[:] = np.nan
 
     # Iterate frames for processing
     for (i, fr) in enumerate(frame_idxs):
@@ -54,10 +54,10 @@ def track_frames_sp(opts,
             [image.get_processed_frame(np.double(readers[iC].get_data(cam_fr_idxs[iC]))) for iC in range(len(videos))])
 
         # print(f'{fr} {time.time()} compute minima')
-        minima = [np.flip(image.get_minima(frames[iC], opts['led_thres'], led_maxpixels=opts['led_thres']), axis=1) for iC in
+        minima = [np.flip(image.get_minima(frames[iC], opts['led_thres'], led_maxpixels=opts['led_maxpixels']), axis=1) for iC in
                   range(len(videos))]  # minima return mat idxs, camera expects xy
 
-        points = camera_setup.triangulate_nopointcorr(minima, offsets, opts['linedist_thres'], max_points=20)
+        points = camera_setup.triangulate_nopointcorr(minima, offsets, opts['linedist_thres'], max_points=30)
 
         if opts["debug"] > 0:
             print(f"{fr} ({cam_fr_idxs}): Found {[m.shape[0] for m in minima]} minima.")

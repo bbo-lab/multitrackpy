@@ -4,7 +4,7 @@ from multitrackpy.rigid_body_transform_3d import rigid_transform_3D
 
 def find_trafo_nocorr(pc1, pc2, corr_thres, track_ambiguous=False):
     errors = np.empty(pc1.shape[0])
-    errors[:] = np.NaN
+    errors[:] = np.nan
 
     corrs = find_correspondences(pc1, pc2, corr_thres, track_ambiguous)
 
@@ -13,9 +13,9 @@ def find_trafo_nocorr(pc1, pc2, corr_thres, track_ambiguous=False):
         errors[corrs[0]] = np.sqrt(np.sum(((R @ pc1[corrs[0]].T + t) - pc2[corrs[1]].T) ** 2, axis=0))
     else:
         R = np.empty((3, 3))
-        R[:] = np.NaN
+        R[:] = np.nan
         t = np.empty((3, 1))
-        t[:] = np.NaN
+        t[:] = np.nan
 
     return R, t, errors
 

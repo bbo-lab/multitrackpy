@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bbo-multitrackpy"
+dynamic = ["version"]
+description = "Detect head positions from MTT files"
+readme = "README.md"
+license = "LGPL-3.0-or-later"
+authors = [
+    { name = "BBO-lab @ caesar", email = "kay-michael.voit@mpinb.mpg.de" },
+]
+classifiers = [
+    "License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)",
+    "Programming Language :: Python :: 3.10",
+]
+dependencies = [
+    "bbo-multitrackpy",
+    "bbo-calibcamlib",
+    "bbo-ccvtools",
+    "bbo-bbo",
+    "matplotlib",
+    "construct",
+]
+
+[project.urls]
+Homepage = "https://github.com/bbo-lab/multitrackpy"
+
+[tool.hatch.version]
+path = "multitrackpy/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/multitrackpy",
+]
+
+[tool.hatch.build.targets.wheel]
+      packages = ["multitrackpy"]
+
