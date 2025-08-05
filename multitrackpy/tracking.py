@@ -1,5 +1,4 @@
 import numpy as np
-from ccvtools import rawio  # noqa
 from multiprocessing import Pool
 from functools import partial
 import time

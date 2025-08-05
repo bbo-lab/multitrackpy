@@ -1,4 +1,4 @@
-import imageio
+import svidreader
 import numpy as np
 from pathlib import Path
 
@@ -23,9 +23,9 @@ def track_frames_sp(opts,
     if videos is None:
         videos = mtt.read_video_paths(opts['video_dir'], opts['mtt_file'])
     if readers is None:
-        readers = [imageio.get_reader(videos[i]) for i in range(len(videos))]
+        readers = [svidreader.get_reader(videos[i], backend="iio") for i in range(len(videos))]
     if offsets is None:
-        offsets = np.array([reader.header['sensor']['offset'] for reader in readers])
+        offsets = np.array([list(reader.get_meta_data()["sensor"]["offset"]) for reader in readers])
 
     if R is None:
         assert (t is None and errors is None and fr_out is None)

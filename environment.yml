@@ -12,6 +12,7 @@ dependencies:
   - pip:
     - bbo-multitrackpy
     - bbo-calibcamlib
+    - bbo-svidreader
     - bbo-ccvtools
     - bbo-bbo
     - matplotlib
